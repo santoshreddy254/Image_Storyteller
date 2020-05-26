@@ -1,0 +1,69 @@
+\documentclass{article}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath}
+\usepackage{hyperref}
+\usepackage{geometry}
+\usepackage{multirow}
+\usepackage{multicol}
+\usepackage{graphicx}
+\usepackage{subfig}
+\usepackage[utf8]{inputenc}
+\usepackage[dvipsnames]{xcolor}
+
+\geometry{
+ a4paper,
+ total={170mm,257mm},
+ left=20mm,
+ top=20mm,
+}
+
+\usepackage[
+backend=biber,
+style=ieee,
+sorting=ynt
+]{biblatex}
+
+\addbibresource{bibliography.bib}
+
+\title{Natural Language Processing - Project Proposal\\ A Gripping Story- Written by Deep Neural Network}
+\author{Deepan Chakravarthi Padmanabhan\\Vahid MohammadiGahrooei\\Venkata Santosh Sai Ramireddy Muthireddy}
+\date{Assignment submission date: \today}
+
+\begin{document}
+\maketitle
+\section{Introduction}
+An autonomous system aims to operate at full autonomy in real world. To achieve this, the system requires an understanding of the complete scene. This includes perceiving the environment, understand the reason behind the actions, predict the prospective actions and interaction among the entities in the scene. The high-level semantic information from this visual data is provided by the language. Language plays a pivotal part to communicate between naive user and vision algorithm outputs \cite{movie-story}. This process of providing natural language information for visual signals find importance in various applications such as social robotics and assistive driving. 
+
+Books are the sources of high-level semantic and fine-grained visual information. The semantic information include thoughts, feelings as well as the evolution of human thoughts through a story. The fine-grained information depict the characters and scene descriptions. The process of grounding textual descriptions to visual data provides a relatively better explanations compared to the captioning the visual data \cite{movie-story}. 
+
+This project is an inspiration of the work, 'Aligning Books and Movies: Towards Story-like Visual Explanations by Watching Movies and Reading Books' \cite{movie-story}, and 'Show and Tell: Lessons learned from the 2015 MSCOCO Image Captioning Challenge' \cite{showandtell}. The contributions of the project are listed below:
+\begin{enumerate}
+    \item Implementation of the Show and Tell- im2txt in TensorFlow 2. 
+    \item Implementation of a Neural Story Teller from the im2txt captions using skip-thought vectors discussed in \cite{movie-story} or using word vectors.
+    \item Subjectively compare by human rating the skip-thought vector based storyteller and word vectors based storyteller.
+\end{enumerate}
+
+\section{Plan of attack}
+
+This project focuses on the following steps to develop a story provided an image.
+
+\begin{enumerate}
+\item Collect datasets: MSCOCO for caption generation and Adventure/Romantic novels for skip-thought RNN decoder.
+\item Implement im2txt to generate caption for a given image. The current version of im2txt in Tensorflow is in version Tensorflow 1.x.
+\item Implement skip-thought vector decoder with the caption from im2txt to generate story.
+\item Implement word sequence generation with the caption as starting sequence to generate story.
+\item Compare skip-thought vector based storyteller and word sequence generation based storyteller.
+\end{enumerate}
+
+In this project skip-though vector or word sequence based storyteller will be implemented depending on time. Therefore, the subjective comparison of both methods will be done depending on the time. 
+
+\section{Evaluation}
+
+\begin{enumerate}
+    \item Evaluate im2txt implementation as per the evaluation procedure in \cite{showandtell}.
+    \item Evaluate skip-thought vector using the evaluation method in \cite{skip-thought}.
+\end{enumerate}
+
+Since it is unsupervised story generation, the evaluation is challenging. Check into the evaluation of song generation, word sequence generation, etc., May be we can get some idea.
+\printbibliography
+\end{document}
