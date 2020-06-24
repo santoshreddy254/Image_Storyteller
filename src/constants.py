@@ -1,10 +1,12 @@
 annotation_folder = '/annotations/'
 image_folder = '/train2014/'
 checkpoint_path = './checkpoints/train'
+img_name_val_file = "img_name_val.txt"
+cap_val_file = "cap_val.txt"
 
 top_k = 5000
 num_examples = 30000
-# extract_images = 500
+num_epochs = 30
 
 # Tunable parameters depending on the system's configuration.
 BATCH_SIZE = 64

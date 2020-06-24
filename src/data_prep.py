@@ -113,6 +113,7 @@ class DataLoader():
         # Create training and validation sets using 80-20 split.
         # image file name for training and validation
         # caption for training and validation
+
         self.get_imgnames_captions()
         max_length, cap_vector, tokenizer = self.get_tokenizer()
 

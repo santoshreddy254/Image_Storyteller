@@ -2,7 +2,8 @@ import tensorflow as tf
 import time
 import pickle
 
-from constants import top_k, embedding_dim, units, BATCH_SIZE, start_epoch, attention_features_shape, checkpoint_path
+from constants import top_k, embedding_dim, units, BATCH_SIZE, start_epoch, attention_features_shape, \
+    checkpoint_path, img_name_val_file, cap_val_file, num_epochs
 
 from encoder import CNN_Encoder
 from decoder import RNN_Decoder
@@ -17,8 +18,7 @@ dataset = data_getter.get_dataset()
 img_name_train, img_name_val = data_getter.img_name_train, data_getter.img_name_val
 cap_train, cap_val = data_getter.cap_train, data_getter.cap_val
 
-img_name_val_file = "img_name_val.txt"
-cap_val_file = "cap_val.txt"
+
 with open(img_name_val_file, 'wb') as fp:
     pickle.dump(img_name_val, fp)
 
@@ -28,7 +28,7 @@ with open(cap_val_file, 'wb') as fp:
 vocab_size = top_k + 1
 encoder = CNN_Encoder(embedding_dim)
 decoder = RNN_Decoder(embedding_dim, units, vocab_size) # (256, 512, 5001)
-EPOCHS = 3
+EPOCHS = num_epochs
 num_steps = len(img_name_train)// BATCH_SIZE
 
 @tf.function

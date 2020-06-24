@@ -1,7 +1,8 @@
 import tensorflow as tf
 import time
 
-from constants import top_k, embedding_dim, units, BATCH_SIZE, start_epoch, attention_features_shape, checkpoint_path
+from constants import top_k, embedding_dim, units, BATCH_SIZE, start_epoch, attention_features_shape, \
+    checkpoint_path, img_name_val_file, cap_val_file
 from encoder import CNN_Encoder
 from decoder import RNN_Decoder
 from loss import optimizer, loss_function
@@ -11,6 +12,9 @@ import numpy as np
 from PIL import Image
 import matplotlib.pyplot as plt
 import pickle
+import nltk
+import pandas as pd
+
 
 vocab_size = top_k + 1
 encoder = CNN_Encoder(embedding_dim)
@@ -76,8 +80,13 @@ def plot_attention(image, result, attention_plot):
     plt.tight_layout()
     plt.show()
 
-img_name_val_file = "img_name_val.txt"
-cap_val_file = "cap_val.txt"
+def compute_BLEU_score(reference, hypothesis):
+    BLEU_1 = nltk.translate.bleu_score.sentence_bleu([reference], hypothesis, weights=(1.0, 0.0, 0.0, 0.0))
+    BLEU_2 = nltk.translate.bleu_score.sentence_bleu([reference], hypothesis, weights=(0.5, 0.5, 0.0, 0.0))
+    BLEU_3 = nltk.translate.bleu_score.sentence_bleu([reference], hypothesis, weights=(0.33, 0.33, 0.33, 0.0))
+    BLEU_4 = nltk.translate.bleu_score.sentence_bleu([reference], hypothesis, weights=(0.25, 0.25, 0.25, 0.25))
+    return BLEU_1, BLEU_2, BLEU_3, BLEU_4
+
 with open(img_name_val_file, 'rb') as fp:
     img_name_val = pickle.load(fp)
 
@@ -85,11 +94,25 @@ with open(cap_val_file, 'rb') as fp:
     cap_val = pickle.load(fp)
 
 
-rid = np.random.randint(0, len(img_name_val))
-image = img_name_val[rid]
-real_caption = ' '.join([tokenizer.index_word[i] for i in cap_val[rid] if i not in [0]])
-result, attention_plot = evaluate(image)
+# rid = np.random.randint(0, len(img_name_val))
+VISUALIZE = False
+BLEU = []
 
-print ('Real Caption:', real_caption)
-print ('Prediction Caption:', ' '.join(result))
-plot_attention(image, result, attention_plot)
+for rid, image in enumerate(img_name_val):
+    image = img_name_val[rid]
+    real_caption = ' '.join([tokenizer.index_word[i] for i in cap_val[rid] if i not in [0]])
+    hypothesis, attention_plot = evaluate(image)
+    reference =  [tokenizer.index_word[i] for i in cap_val[rid] if i not in [0]]
+    BLEU.append(list(compute_BLEU_score(reference, hypothesis)))
+
+    print ('Real Caption:', real_caption)
+    print ('Prediction Caption:', ' '.join(hypothesis))
+    if VISUALIZE:
+        plot_attention(image, hypothesis, attention_plot)
+BLEU_mean = np.round(np.mean(np.array(BLEU), axis=0),4)
+
+metrics = {'Val_images': [len(img_name_val)],'BLEU-1': [BLEU_mean[0]], 'BLEU-2': [BLEU_mean[1]],
+           'BLEU-3': [BLEU_mean[2]], 'BLEU-4': [BLEU_mean[3]]}
+metrics_df = pd.DataFrame(metrics)
+metrics_filename = 'metrics.csv'
+metrics_df.to_csv(metrics_filename, mode='w+', header=True)
